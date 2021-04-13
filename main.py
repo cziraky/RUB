@@ -46,12 +46,26 @@ def touched():
     global interacting
     interacting = True
     rub.led_brightness(255)
-    rub.set_led_color(0x00FFFF)
+    rub.set_led_color(0xFF0000)
     set_emotion(IconNames.ANGRY)
+    basic.pause(10)
     rub.position_servo(servoPos.OPEN, servoSpeed.FAST)
 #    soundExpression.mysterious.play()
-    basic.pause(5000)
+    basic.pause(3000)
+    rub.led_brightness(50)
+    rub.set_led_color(0xFF0000)
+    set_emotion(IconNames.SAD)
     rub.position_servo(servoPos.CLOSED, servoSpeed.MEDIUM)
+    basic.pause(200)
+    if Math.random_boolean():
+        rub.led_brightness(255)
+        rub.set_led_color(0xFF0000)
+        set_emotion(IconNames.ANGRY)
+        rub.position_servo(servoPos.OPEN, servoSpeed.FAST)
+        basic.pause(1500)
+        rub.position_servo(servoPos.CLOSED, servoSpeed.MEDIUM)
+        basic.pause(200)
+
     interacting = False
 
 def on_sound_loud():
@@ -79,10 +93,10 @@ def on_forever():
         for lb in range(0, 255, 10):
             rub.led_brightness(lb)
             rub.led_rainbow()
-            basic.pause(10)
+            basic.pause(50)
         for lb in range(0, 255, 10):
             rub.led_brightness(255 - lb)
             rub.led_rainbow()
-            basic.pause(10)
+            basic.pause(50)
 
 basic.forever(on_forever)

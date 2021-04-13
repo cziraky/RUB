@@ -59,12 +59,27 @@ input.onGesture(Gesture.Shake, function touched() {
     
     interacting = true
     rub.ledBrightness(255)
-    rub.setLedColor(0x00FFFF)
+    rub.setLedColor(0xFF0000)
     set_emotion(IconNames.Angry)
+    basic.pause(10)
     rub.positionServo(servoPos.Open, servoSpeed.Fast)
     //     soundExpression.mysterious.play()
-    basic.pause(5000)
+    basic.pause(3000)
+    rub.ledBrightness(50)
+    rub.setLedColor(0xFF0000)
+    set_emotion(IconNames.Sad)
     rub.positionServo(servoPos.Closed, servoSpeed.Medium)
+    basic.pause(200)
+    if (Math.randomBoolean()) {
+        rub.ledBrightness(255)
+        rub.setLedColor(0xFF0000)
+        set_emotion(IconNames.Angry)
+        rub.positionServo(servoPos.Open, servoSpeed.Fast)
+        basic.pause(1500)
+        rub.positionServo(servoPos.Closed, servoSpeed.Medium)
+        basic.pause(200)
+    }
+    
     interacting = false
 })
 on_startup()
@@ -76,12 +91,12 @@ basic.forever(function on_forever() {
         for (lb = 0; lb < 255; lb += 10) {
             rub.ledBrightness(lb)
             rub.ledRainbow()
-            basic.pause(10)
+            basic.pause(50)
         }
         for (lb = 0; lb < 255; lb += 10) {
             rub.ledBrightness(255 - lb)
             rub.ledRainbow()
-            basic.pause(10)
+            basic.pause(50)
         }
     }
     
