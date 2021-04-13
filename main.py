@@ -1,50 +1,57 @@
-play_sound_expressions = {
-    'hello': soundExpression.hello.play(),
-    'slide': soundExpression.slide.play(),
-    'giggle': soundExpression.giggle.play(),
-    'soaring': soundExpression.soaring.play(),
-    'sad': soundExpression.sad.play()
-}
+interacting = False
 
 def set_emotion(emotion):
     basic.show_icon(emotion)
 
-def play_sound(expression):
-    play_sound_expressions['hello']
-
 def on_startup():
-    set_emotion(IconNames.HAPPY)
-    play_sound('hello')
     rub.led_brightness(0)
+    set_emotion(IconNames.HAPPY)
+    soundExpression.hello.play()
     rub.set_led_color(0xFFFFFF)
-    for lb in range(255):
+    for lb in range(0, 255, 10):
         rub.led_brightness(lb)
-        rub.led_rainbow()
-        basic.pause(20)
-    play_sound('giigle')
+        basic.pause(10)
+    soundExpression.giggle.play()
     rub.set_servo_presets(75, 110, 160)
     rub.position_servo(servoPos.CLOSED, servoSpeed.VERY_FAST)
     rub.set_led_color(0x00FFFF)
 
 def my_function():
+    global interacting
+    rub.led_brightness(255)
     rub.set_led_color(0xFF0000)
+    set_emotion(IconNames.CONFUSED)
+    interacting = True
     rub.position_servo(servoPos.SWITCHED, servoSpeed.VERY_FAST)
+    soundExpression.slide.play()
+    interacting = False
 rub.on_switch_event(RubEvents.ON, my_function)
 
 def my_function2():
+    global interacting
+    rub.led_brightness(255)
+    rub.set_led_color(0x00FFFF)
+    set_emotion(IconNames.ANGRY)
+    interacting = True
     rub.position_servo(servoPos.CLOSED, servoSpeed.FAST)
     basic.pause(300)
-    rub.set_led_color(0x00FFFF)
+    interacting = False
 rub.on_switch_event(RubEvents.OFF, my_function2)
 
-def rainbow_led():
-    for index in range(255):
-        for index2 in range(255):
-            for index3 in range(255):
-                rub.set_led_color(0xff0000)
-led_colors = [0, 16711680, 65280, 255, 16711680, 65280]
 on_startup()
 
 def on_forever():
-    pass
+    global interacting
+    if interacting == False:
+        set_emotion(IconNames.HAPPY)
+        for lb in range(0, 255, 10):
+            rub.led_brightness(lb)
+            rub.led_rainbow()
+            basic.pause(10)
+        set_emotion(IconNames.SILLY)
+        for lb in range(0, 255, 10):
+            rub.led_brightness(255 - lb)
+            rub.led_rainbow()
+            basic.pause(10)
+
 basic.forever(on_forever)
