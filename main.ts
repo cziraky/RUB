@@ -1,55 +1,83 @@
+let init = true
 let interacting = false
 function set_emotion(emotion: number) {
     basic.showIcon(emotion)
 }
 
 function on_startup() {
-    rub.ledBrightness(0)
-    set_emotion(IconNames.Happy)
-    soundExpression.hello.play()
-    rub.setLedColor(0xFFFFFF)
+    
+    init = true
+    input.setSoundThreshold(SoundThreshold.Loud)
     for (let lb = 0; lb < 255; lb += 10) {
         rub.ledBrightness(lb)
+        rub.setLedColor(0xFFFFFF)
         basic.pause(10)
     }
-    soundExpression.giggle.play()
+    set_emotion(IconNames.Happy)
+    soundExpression.hello.play()
+    basic.pause(3000)
     rub.setServoPresets(75, 110, 160)
     rub.positionServo(servoPos.Closed, servoSpeed.VeryFast)
     rub.setLedColor(0x00FFFF)
+    init = false
 }
 
-rub.onSwitchEvent(RubEvents.On, function my_function() {
+rub.onSwitchEvent(RubEvents.On, function turned_on() {
     
-    rub.ledBrightness(255)
-    rub.setLedColor(0xFF0000)
-    set_emotion(IconNames.Confused)
     interacting = true
+    //     rub.led_brightness(255)
+    //     rub.set_led_color(0xFF0000)
+    set_emotion(IconNames.Confused)
     rub.positionServo(servoPos.Switched, servoSpeed.VeryFast)
-    soundExpression.slide.play()
+    //     soundExpression.slide.play()
+    rub.waitServo()
     interacting = false
 })
-rub.onSwitchEvent(RubEvents.Off, function my_function2() {
+rub.onSwitchEvent(RubEvents.Off, function turned_off() {
     
+    interacting = true
+    //     rub.led_brightness(255)
+    //     rub.set_led_color(0x00FFFF)
+    set_emotion(IconNames.Angry)
+    rub.positionServo(servoPos.Closed, Math.randomBoolean() ? servoSpeed.Fast : servoSpeed.VeryFast)
+    rub.waitServo()
+    basic.pause(300)
+    interacting = false
+})
+input.onSound(DetectedSound.Loud, function on_sound_loud() {
+    
+    interacting = true
+    rub.ledBrightness(255)
+    rub.setLedColor(0xFFFFFF)
+    set_emotion(IconNames.Surprised)
+    rub.positionServo(servoPos.Closed, servoSpeed.VeryFast)
+    //    soundExpression.sad.play()
+    basic.pause(3000)
+    interacting = false
+})
+input.onGesture(Gesture.Shake, function touched() {
+    
+    interacting = true
     rub.ledBrightness(255)
     rub.setLedColor(0x00FFFF)
     set_emotion(IconNames.Angry)
-    interacting = true
-    rub.positionServo(servoPos.Closed, servoSpeed.Fast)
-    basic.pause(300)
+    rub.positionServo(servoPos.Open, servoSpeed.Fast)
+    //     soundExpression.mysterious.play()
+    basic.pause(5000)
+    rub.positionServo(servoPos.Closed, servoSpeed.Medium)
     interacting = false
 })
 on_startup()
 basic.forever(function on_forever() {
     let lb: number;
     
-    if (interacting == false) {
-        set_emotion(IconNames.Happy)
+    if (interacting == false && init == false) {
+        set_emotion(IconNames.Asleep)
         for (lb = 0; lb < 255; lb += 10) {
             rub.ledBrightness(lb)
             rub.ledRainbow()
             basic.pause(10)
         }
-        set_emotion(IconNames.Silly)
         for (lb = 0; lb < 255; lb += 10) {
             rub.ledBrightness(255 - lb)
             rub.ledRainbow()
